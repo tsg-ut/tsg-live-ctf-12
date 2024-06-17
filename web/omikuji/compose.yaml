@@ -1,0 +1,14 @@
+services:
+  app:
+    init: true
+    build: ./
+    restart: always
+  nginx:
+    init: true
+    image: nginx:1.26.0-alpine
+    ports:
+      - 3456:80
+    volumes:
+      - ./dist/nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+    environment:
+      FLAG: TSGLIVE{1_knew_at_f1rst_g1ance_that_1t_was_so_0rdin4ry_path_traversal}

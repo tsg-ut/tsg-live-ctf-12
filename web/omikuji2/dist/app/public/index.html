@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>おみくじ</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/light.css">
+</head>
+<body>
+    <h1>おみくじ</h1>
+    <div v-scope>
+        <button type="button" @click="draw">引く</button>
+        <pre>{{ result?.content }}</pre>
+        <button type="button" @click="save">結果を保存する</button>
+        <div v-if="savedLink"><a :href="savedLink" target="_blank">保存された結果を見る</a></div>
+    </div>
+
+    <script type="module">
+        import { createApp } from 'https://unpkg.com/petite-vue@0.4.1?module'
+        createApp({
+            result: null,
+            savedLink: null,
+            async draw() {
+                this.result = null
+                const response = await fetch('/draw')
+                this.result = await response.json()
+            },
+            async save() {
+                if (this.result === null) {
+                    return
+                }
+                this.savedLink = null
+                const response = await fetch('/save', {
+                    method: 'POST',
+                    body: this.result.type,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    }
+                })
+                const { location } = await response.json()
+                this.savedLink = location
+            }
+        }).mount()
+    </script>
+</body>
+</html>

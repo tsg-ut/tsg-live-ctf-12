@@ -1,0 +1,11 @@
+services:
+    ctf:
+        restart: always
+        build:
+            context: .
+            dockerfile: ./Dockerfile
+        read_only: false
+        tmpfs: 
+          - /tmp
+        ports:
+            - '27182:27182'
